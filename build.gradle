@@ -1,0 +1,53 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy'
+    id 'maven-publish'
+    id("com.gradle.plugin-publish") version "0.15.0"
+}
+
+// buildscript {
+//     repositories {
+//         maven {
+//             url "https://plugins.gradle.org/m2/"
+//         }
+//     }
+//     dependencies {
+//         classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
+//     }
+// }
+
+group = "edu.illinois"
+version = "1.1.4"
+// apply plugin: "com.gradle.plugin-publish"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+            url "https://plugins.gradle.org/m2/"
+    }
+}
+
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'edu.illinois:nondex-common:' + "1.1.3-SNAPSHOT"
+    implementation 'edu.illinois:nondex-instrumentation:' + "1.1.3-SNAPSHOT"
+    implementation "org.gradle:test-retry-gradle-plugin:1.4.0"
+    testImplementation 'junit:junit:4.12'
+}
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+  archiveClassifier = 'sources'
+}
+
+publishing {
+    publications {
+        pluginMaven(MavenPublication) {
+            artifactId = "nondex-gradle-plugin"
+            artifact sourceJar
+        }
+     }
+}
